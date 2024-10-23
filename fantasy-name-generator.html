@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      background: #f0e6d6;
+      font-family: 'Georgia', serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .book-container {
+      display: flex;
+      max-width: 1000px;
+      height: 600px;
+      background: #fff;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .left-page {
+      flex: 1;
+      padding: 40px;
+      border-right: 2px solid #e0d5c5;
+      background: linear-gradient(to right, #fff 95%, #e0d5c5 100%);
+    }
+
+    .right-page {
+      flex: 1;
+      padding: 40px;
+      background: linear-gradient(to left, #fff 95%, #e0d5c5 100%);
+    }
+
+    h1 {
+      color: #492e2e;
+      font-size: 24px;
+      margin-bottom: 30px;
+      text-align: center;
+      font-family: 'Georgia', serif;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #492e2e;
+      font-weight: bold;
+    }
+
+    select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #8b4513;
+      border-radius: 4px;
+      background: #fff;
+      color: #492e2e;
+      margin-bottom: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #8b4513;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #6b3410;
+    }
+
+    #generatedName {
+      margin-top: 30px;
+      padding: 20px;
+      border: 1px solid #8b4513;
+      border-radius: 4px;
+      text-align: center;
+      font-size: 20px;
+      min-height: 60px;
+    }
+
+    #history {
+      margin-top: 20px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .history-item {
+      padding: 10px;
+      border-bottom: 1px solid #e0d5c5;
+      color: #492e2e;
+    }
+
+    .history-item:hover {
+      background: #f9f5f0;
+    }
+  </style>
+</head>
+<body>
+  <div class="book-container">
+    <div class="left-page">
+      <h1>Fantasy Name Generator</h1>
+      <div class="form-group">
+        <label for="race">Choose Race:</label>
+        <select id="race">
+          <option value="elf">Elf</option>
+          <option value="dwarf">Dwarf</option>
+          <option value="human">Human</option>
+          <option value="orc">Orc</option>
+        </select>
+
+        <label for="gender">Choose Gender:</label>
+        <select id="gender">
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+
+        <button onclick="generateName()">Generate Name</button>
+      </div>
+      <div id="generatedName"></div>
+    </div>
+    
+    <div class="right-page">
+      <h1>Name History</h1>
+      <div id="history"></div>
+    </div>
+  </div>
+
+  <script>
+    const names = {
+      elf: {
+        male: {
+          first: ['Thaelar', 'Aelindril', 'Caelynn', 'Eldrin', 'Faelar'],
+          last: ['Moonweaver', 'Starwhisper', 'Silverleaf', 'Dawnwind', 'Nightwalker']
+        },
+        female: {
+          first: ['Aelar', 'Lorarael', 'Sylvaria', 'Eliara', 'Myriella'],
+          last: ['Moonwhisper', 'Starweaver', 'Silverglade', 'Dawnlight', 'Nightsong']
+        }
+      },
+      dwarf: {
+        male: {
+          first: ['Thorin', 'Balin', 'Dwalin', 'Gloin', 'Gimli'],
+          last: ['Stonefist', 'Ironbeard', 'Goldforge', 'Steelaxe', 'Battlehammer']
+        },
+        female: {
+          first: ['Dis', 'Thyra', 'Hilda', 'Britta', 'Dagmar'],
+          last: ['Stoneheart', 'Ironweaver', 'Goldweaver', 'Steelforge', 'Battleborn']
+        }
+      },
+      human: {
+        male: {
+          first: ['Richard', 'William', 'Edward', 'Arthur', 'Roland'],
+          last: ['Blackwood', 'Stormwind', 'Winterfall', 'Brightsword', 'Darkhelm']
+        },
+        female: {
+          first: ['Eleanor', 'Margaret', 'Catherine', 'Elizabeth', 'Victoria'],
+          last: ['Blackrose', 'Stormweaver', 'Winterheart', 'Brightheart', 'Darkstar']
+        }
+      },
+      orc: {
+        male: {
+          first: ['Grommash', 'Thrall', 'Garrosh', 'Korgath', 'Nazgrim'],
+          last: ['Bloodfist', 'Hellscream', 'Doomhammer', 'Warsong', 'Skullcrusher']
+        },
+        female: {
+          first: ['Aggra', 'Garona', 'Draka', 'Anka', 'Griselda'],
+          last: ['Bloodrage', 'Hellblade', 'Doomfury', 'Warmaiden', 'Skullreaper']
+        }
+      }
+    };
+
+    function getRandomElement(array) {
+      return array[Math.floor(Math.random() * array.length)];
+    }
+
+    function generateName() {
+      const race = document.getElementById('race').value;
+      const gender = document.getElementById('gender').value;
+      
+      const firstName = getRandomElement(names[race][gender].first);
+      const lastName = getRandomElement(names[race][gender].last);
+      
+      const fullName = `${firstName} ${lastName}`;
+      document.getElementById('generatedName').textContent = fullName;
+      
+      addToHistory(fullName, race, gender);
+    }
+
+    function addToHistory(name, race, gender) {
+      const history = document.getElementById('history');
+      const historyItem = document.createElement('div');
+      historyItem.className = 'history-item';
+      historyItem.textContent = `${name} (${race} ${gender})`;
+      history.insertBefore(historyItem, history.firstChild);
+    }
+  </script>
+</body>
+</html>
